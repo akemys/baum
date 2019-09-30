@@ -445,10 +445,10 @@ abstract class Node extends Model {
    * @param  bool $force
    * @return void
    */
-  public static function rebuild($force = false) {
+  public static function rebuild($force = false, $withTrashed = false) {
     $builder = new SetBuilder(new static);
 
-    $builder->rebuild($force);
+    $builder->rebuild($force, $withTrashed);
   }
 
   /**
