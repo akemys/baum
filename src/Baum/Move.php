@@ -381,12 +381,20 @@ class Move {
    * @param   int   $rgt
    * @return  void
    */
-  protected function applyLockBetween($lft, $rgt) {
-    $this->node->newQuery()
-      ->where($this->node->getLeftColumnName(), '>=', $lft)
-      ->where($this->node->getRightColumnName(), '<=', $rgt)
-      ->select($this->node->getKeyName())
-      ->lockForUpdate()
-      ->get();
-  }
+  protected function applyLockBetween($lft, $rgt)
+    {
+        $node = $this->node;
+        $builder = $node->newQuery();
+
+        if ($node->isScoped()) {
+            foreach ($node->getScopedColumns() as $scopeFld)
+                $builder->where($scopeFld, '=', $node->$scopeFld);
+        }
+
+        $builder->where($this->node->getLeftColumnName(), '>=', $lft)
+            ->where($this->node->getRightColumnName(), '<=', $rgt)
+            ->select($this->node->getKeyName())
+            ->lockForUpdate()
+            ->select("id");
+    }
 }
